@@ -80,6 +80,21 @@ export class StoreResolver {
     return stores.map((s) => s.toJSON());
   }
 
+  @Query((returns) => Store)
+  async store(@Arg('id') store_id: string) {
+    await getMongoConnection();
+
+    const store = await StoreModel.findOne({
+      _id: store_id,
+    }).exec();
+
+    if (!store) {
+      throw new Error('Store not found');
+    }
+
+    return store.toJSON();
+  }
+
   /**
    * Field in the Store Object that returns a list of nearby stores
    */
