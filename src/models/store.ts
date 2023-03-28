@@ -124,22 +124,24 @@ StoreSchema.methods.toJSON = function () {
     id: s._id || 'unknown',
     name: s.name,
     url: s.url,
+
+    address: {
+      ...s.address,
+      state: state_string_to_object(s.address.state),
+    },
+    phone_numbers: s.phone_numbers || [],
+    fax_numbers: s.fax_numbers || [],
+    emails: s.emails || [],
+    website: s.website,
     open_hours: s.open_hours.map((s) => ({
       day: s.day,
       open: s.start,
       close: s.end,
     })),
-    address: {
-      ...s.address,
-      state: state_string_to_object(s.address.state),
-    },
-    website: s.website,
-    phone_numbers: s.phone_numbers || [],
     coordinates: new Coordinates(
       s.location.coordinates[0] || 0,
       s.location.coordinates[1] || 0
     ),
-    fax_numbers: s.fax_numbers || [],
     social: s.social || {
       facebook: '',
       instagram: '',
