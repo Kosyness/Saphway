@@ -67,6 +67,37 @@ query GetAllStoresPaginated($limit: Int, $page: Int) {
   }
 }
 
+query GetAllStoresInCity($limit: Int, $page: Int, $city: String) {
+    stores(limit: $limit, page: $page, where: { address: { city: $city }}) {
+      id
+      name
+      url
+      address {
+        street
+        city
+        state {
+          state
+          abbreviation
+        }
+        zip
+        country
+      }
+      phone_numbers
+      fax_numbers
+      emails
+      website
+      open_hours {
+        day
+        open 
+        close
+      }
+      coordinates {
+        latitude
+        longitude
+      }
+  }
+}
+
 query GetClosestStoresToAllStores($limit: Int, $page: Int, $distance: Int){
   stores(limit: $limit, page: $page) {
     id
