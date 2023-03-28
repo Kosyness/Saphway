@@ -134,12 +134,19 @@ StoreSchema.methods.toJSON = function () {
       state: state_string_to_object(s.address.state),
     },
     website: s.website,
-    phone_numbers: s.phone_numbers,
+    phone_numbers: s.phone_numbers || [],
     coordinates: new Coordinates(
       s.location.coordinates[0] || 0,
       s.location.coordinates[1] || 0
     ),
-    social: s.social,
+    fax_numbers: s.fax_numbers || [],
+    social: s.social || {
+      facebook: '',
+      instagram: '',
+      pinterest: '',
+      twitter: '',
+      youtube: '',
+    },
     closed: s.closed || false,
   };
 };
