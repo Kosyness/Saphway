@@ -33,6 +33,111 @@ The GraphQL API Consists of the following Queries and Mutations:
 
 open/close store - Opens or Closes a Store by `id`
 
+### Example Queries and Mutations
+
+```gql
+query GetAllStoresPaginated($limit: Int, $page: Int) {
+    stores(limit: $limit, page: $page) {
+      id
+      name
+      url
+      address {
+        street
+        city
+        state {
+          state
+          abbreviation
+        }
+        zip
+        country
+      }
+      phone_numbers
+      fax_numbers
+      emails
+      website
+      open_hours {
+        day
+        open 
+        close
+      }
+      coordinates {
+        latitude
+        longitude
+      }
+  }
+}
+
+query GetClosestStoresToAllStores($limit: Int, $page: Int, $distance: Int){
+  stores(limit: $limit, page: $page) {
+    id
+    name
+    coordinates {
+        latitude
+        longitude
+    } 
+    nearby(distance: $distance, include_closed: true){
+      id
+      name
+      coordinates {
+        latitude
+        longitude
+      } 
+      closed
+    }
+  }
+}
+
+# STORE_ID IS REQUIRED
+query GetStoreWithClosestStores($store_id: String!, $distance: Int) {
+  store(id: $store_id) {
+    id
+    name
+    coordinates {
+        latitude
+        longitude
+    } 
+    nearby(distance: $distance, include_closed: true){
+      id
+      name
+      coordinates {
+        latitude
+        longitude
+      } 
+      closed
+    }
+  }
+}
+
+# STORE_ID IS REQUIRED
+mutation CloseStore($store_id: String!) {
+  close(id: $store_id){
+    id
+  }
+}
+
+# STORE_ID IS REQUIRED
+mutation OpenStore($store_id: String!) {
+  open(id: $store_id) {
+    id
+    name
+    url
+    address {
+      street
+      city
+      state {
+        state
+        abbreviation
+      }
+      zip
+      country
+    }
+  }
+}
+
+
+
+```
+
 ## Requirements
 
 Envornment Variables:
