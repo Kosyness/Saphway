@@ -133,15 +133,14 @@ mutation OpenStore($store_id: String!) {
     }
   }
 }
-
-
-
 ```
 
 ## Requirements
 
 Envornment Variables:
 - MONGO_URI
+
+> ***After starting the server, please visit POST or GET /api/stores to populate the database with the data from the JSON file.***
 
 ## How to use
 
