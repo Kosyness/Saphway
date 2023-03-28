@@ -41,6 +41,32 @@ export class Coordinates {
   public longitude: number = 0;
 }
 
+@ObjectType()
+export class Socials {
+  @Field({ nullable: true })
+  public facebook?: string;
+
+  @Field({
+    nullable: true,
+  })
+  public twitter?: string;
+
+  @Field({
+    nullable: true,
+  })
+  public instagram?: string;
+
+  @Field({
+    nullable: true,
+  })
+  public pinterest?: string;
+
+  @Field({
+    nullable: true,
+  })
+  public youtube?: string;
+}
+
 /**
  * The Store Object
  *
@@ -82,4 +108,8 @@ export class Store {
 
   @Field((type) => Boolean)
   public closed: boolean = false;
+
+  @Field((type) => Socials, { nullable: true })
+  public socials?: Socials;
 }
+

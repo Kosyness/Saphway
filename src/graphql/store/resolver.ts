@@ -7,6 +7,7 @@ import {
   ArgsType,
   Field,
   FieldResolver,
+  InputType,
   Int,
   Mutation,
   Query,
@@ -23,7 +24,7 @@ import { StoreWhereInput } from './filters';
 
 /**
  * The Input Arguments for the Store Query
- * 
+ *
  * Contains pagination information, as well as filters for the query
  */
 @ArgsType()
@@ -42,6 +43,48 @@ class GetStoresArgs {
 
   @Field((type) => Boolean, { defaultValue: false })
   public include_closed: boolean = false;
+}
+
+@InputType()
+class StoreSocialsInput {
+  @Field((type) => String, { nullable: true })
+  public facebook?: string;
+
+  @Field((type) => String, { nullable: true })
+  public instagram?: string;
+
+  @Field((type) => String, { nullable: true })
+  public twitter?: string;
+
+  @Field((type) => String, { nullable: true })
+  public website?: string;
+
+  @Field((type) => String, { nullable: true })
+  public youtube?: string;
+
+  @Field((type) => String, { nullable: true })
+  public tiktok?: string;
+}
+
+@InputType()
+class StoreUpdateInput {
+  @Field((type) => String, { nullable: true })
+  public name?: string;
+
+  @Field((type) => String, { nullable: true })
+  public url?: string;
+
+  @Field((type) => String, { nullable: true })
+  public socials?: StoreSocialsInput;
+}
+
+@ArgsType()
+class UpdateStoreArgs {
+  @Field((type) => String)
+  public id: string = '';
+
+  @Field((type) => StoreWhereInput, { nullable: true })
+  public update?: StoreUpdateInput;
 }
 
 @Resolver((type) => Store)
@@ -180,5 +223,35 @@ export class StoreResolver {
     }
 
     return store.toJSON();
+  }
+
+  @Mutation((returns) => Store)
+  public async updateStore(
+    @Args()
+    args: UpdateStoreArgs
+  ) {
+    await getMongoConnection();
+
+    const { id, update } = args;
+
+    const updated_document = await StoreModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          ...update,
+        },
+      },
+      {
+        new: true,
+      }
+    ).exec();
+
+    if (!updated_document) {
+      throw new Error('Store not found');
+    }
+
+    return updated_document.toJSON();
   }
 }
