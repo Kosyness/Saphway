@@ -21,6 +21,11 @@ import { Store } from './object';
 import { NearbyFilterInput, OpenHourFilter } from './filters';
 import { StoreWhereInput } from './filters';
 
+/**
+ * The Input Arguments for the Store Query
+ * 
+ * Contains pagination information, as well as filters for the query
+ */
 @ArgsType()
 class GetStoresArgs {
   @Field((type) => Int, { defaultValue: 1 })
@@ -41,6 +46,11 @@ class GetStoresArgs {
 
 @Resolver((type) => Store)
 export class StoreResolver {
+  /**
+   * The Store Query
+   *
+   * Takes the input arguments, and returns a list of stores (paginated)
+   */
   @Query((returns) => [Store])
   async stores(
     @Args()
@@ -61,7 +71,7 @@ export class StoreResolver {
 
     const stores = await StoreModel.find({
       ...closed_query,
-      ...query
+      ...query,
     })
       .limit(limit)
       .skip((page - 1) * limit)
@@ -70,6 +80,9 @@ export class StoreResolver {
     return stores.map((s) => s.toJSON());
   }
 
+  /**
+   * Field in the Store Object that returns a list of nearby stores
+   */
   @FieldResolver((type) => [Store])
   public async nearby(
     @Args()
@@ -102,7 +115,10 @@ export class StoreResolver {
     return stores.map((s) => s.toJSON());
   }
 
-  @Mutation(returns => Store)
+  /**
+   * A mutation to Close Down a Store
+   */
+  @Mutation((returns) => Store)
   public async close(@Arg('id') id: string) {
     await getMongoConnection();
 
@@ -125,7 +141,10 @@ export class StoreResolver {
     return store.toJSON();
   }
 
-  @Mutation(returns => Store)
+  /**
+   * A mutation to Open Up a Store
+   */
+  @Mutation((returns) => Store)
   public async open(@Arg('id') id: string) {
     await getMongoConnection();
 

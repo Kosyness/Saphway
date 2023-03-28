@@ -17,6 +17,17 @@ import { Store as StoreInterface} from '../../models/store';
 import { Max, Min } from 'class-validator';
 
 
+/**
+ * Contains the filters that are used to check which stores
+ * are open at which times.
+ * 
+ * For example: {
+ * is_open: 1200
+ * day: Monday
+ * } it means, check if the store is open at 12:00 on Monday
+ * 
+ * Known Bug: The is_open field is not working properly for the time being, and has been disabled
+ */
 @InputType()
 export class OpenHourFilter { 
     @Field({
@@ -28,6 +39,14 @@ export class OpenHourFilter {
     public day: Day = Day.Monday;
 }
 
+/**
+ * The Input Filters for the Store Object
+ * 
+ * Filters for:
+ * - name
+ * - address (street, city, state, zip, country)
+ * - open_hours (day, is_open)
+ */
 @InputType()
 export class StoreWhereInput {
   @Field((type) => String, { nullable: true })
@@ -36,11 +55,14 @@ export class StoreWhereInput {
   @Field((type) => AddressFilter, { nullable: true })
   public address?: AddressFilter;
 
-  @Field((type) => OpenHourFilter, { 
+  @Field((type) => OpenHourFilter, {
     nullable: true,
   })
   public open_hours?: OpenHourFilter;
 
+  /**
+   * Generates the query for MongoDB using the filters
+   */
   public generateMongoQuery() {
     let query: FilterQuery<StoreInterface> = {};
 
@@ -48,30 +70,30 @@ export class StoreWhereInput {
       query.name = this.name;
     }
 
-    if(this.address) { 
-      if(this.address.street) { 
+    if (this.address) {
+      if (this.address.street) {
         query['address.street'] = this.address.street;
       }
 
-      if(this.address.city) {
+      if (this.address.city) {
         query['address.city'] = this.address.city;
       }
 
-      if(this.address.state) {
+      if (this.address.state) {
         query['address.state'] = this.address.state;
       }
 
-      if(this.address.zip) {
+      if (this.address.zip) {
         query['address.zip'] = this.address.zip;
       }
 
-      if(this.address.country) {
+      if (this.address.country) {
         query['address.country'] = this.address.country;
       }
     }
 
-    if(this.open_hours) {
-      if(this.open_hours.day) {
+    if (this.open_hours) {
+      if (this.open_hours.day) {
         query['open_hours.day'] = this.open_hours.day.toLowerCase();
       }
 
@@ -86,9 +108,9 @@ export class StoreWhereInput {
   }
 }
 
-
-
-
+/**
+ * A basic filter for the nearby stores
+ */
 @ArgsType()
 export class NearbyFilterInput { 
     @Field(type => Int, {

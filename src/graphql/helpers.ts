@@ -9,53 +9,6 @@ import {
 import { StoreResolver } from './store/resolver';
 import { FilterQuery } from 'mongoose';
 
-const NullableString = (options?: FieldOptions) =>
-  Field((type) => String, { nullable: true, ...options });
-
-@InputType()
-export class StringSearch {
-  @NullableString()
-  eq?: string;
-
-  @NullableString()
-  contains?: string;
-
-  @NullableString()
-  not_contains?: string;
-
-  @NullableString()
-  starts_with?: string;
-
-  @NullableString()
-  not_starts_with?: string;
-
-  @NullableString()
-  ends_with?: string;
-
-  public toMongoQuery() {
-    const query: FilterQuery<unknown> = {};
-    if (this.eq) {
-      query.$eq = this.eq;
-    }
-    if (this.contains) {
-      query.$regex = this.contains;
-    }
-    if (this.not_contains) {
-      query.$not = { $regex: this.not_contains };
-    }
-    if (this.starts_with) {
-      query.$regex = `^${this.starts_with}`;
-    }
-    if (this.not_starts_with) {
-      query.$not = { $regex: `^${this.not_starts_with}` };
-    }
-    if (this.ends_with) {
-      query.$regex = `${this.ends_with}$`;
-    }
-    return query;
-  }
-}
-
 export const STATES = [
   { state: 'Alabama', abbreviation: 'AL' },
   { state: 'Alaska', abbreviation: 'AK' },
@@ -113,7 +66,87 @@ export const STATES = [
 export const state_string_to_object = (state: string) => {
   const state_object = STATES.find((s) => s.abbreviation === state);
 
-  if(!state_object) throw new Error(`Invalid state: ${state}`);
+  // No Error Checking for the time being
+  if (!state_object) throw new Error(`Invalid state: ${state}`);
 
   return state_object;
 };
+
+
+/*
+These will be used as a more advanced search feature
+Although they have not been implemented yet, the idea behind them is:
+
+StringSearch:
+- Contains
+- Not Contains
+- Starts With
+- Not Starts With
+- Ends With
+- Not Ends With
+- Equals
+- Not Equals
+- In
+- Not In
+
+NumberSearch:
+- Equals
+- Not Equals
+- GTE, GT, LT, LTE
+- In
+- Not In
+
+BooleanSearch:
+- Equals
+- Not Equals
+
+Something similar to the way that Neo4j generates filters for it's queries, through a basic GraphQL Object Type
+
+
+const NullableString = (options?: FieldOptions) =>
+  Field((type) => String, { nullable: true, ...options });
+
+@InputType()
+export class StringSearch {
+  @NullableString()
+  eq?: string;
+
+  @NullableString()
+  contains?: string;
+
+  @NullableString()
+  not_contains?: string;
+
+  @NullableString()
+  starts_with?: string;
+
+  @NullableString()
+  not_starts_with?: string;
+
+  @NullableString()
+  ends_with?: string;
+
+  public toMongoQuery() {
+    const query: FilterQuery<unknown> = {};
+    if (this.eq) {
+      query.$eq = this.eq;
+    }
+    if (this.contains) {
+      query.$regex = this.contains;
+    }
+    if (this.not_contains) {
+      query.$not = { $regex: this.not_contains };
+    }
+    if (this.starts_with) {
+      query.$regex = `^${this.starts_with}`;
+    }
+    if (this.not_starts_with) {
+      query.$not = { $regex: `^${this.not_starts_with}` };
+    }
+    if (this.ends_with) {
+      query.$regex = `${this.ends_with}$`;
+    }
+    return query;
+  }
+}
+*/

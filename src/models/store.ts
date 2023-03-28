@@ -114,21 +114,22 @@ const StoreSchema = new Schema<Store>(
     timestamps: true,
   }
 );
-StoreSchema.index( { location: "2dsphere" } );
 
-StoreSchema.methods.toJSON = function() {
+StoreSchema.index({ location: '2dsphere' });
+
+StoreSchema.methods.toJSON = function () {
   const s: Store = this as any;
 
   return {
     id: s._id || 'unknown',
     name: s.name,
     url: s.url,
-    open_hours: s.open_hours.map(s => ({
+    open_hours: s.open_hours.map((s) => ({
       day: s.day,
       open: s.start,
       close: s.end,
     })),
-    address: { 
+    address: {
       ...s.address,
       state: state_string_to_object(s.address.state),
     },
@@ -139,8 +140,9 @@ StoreSchema.methods.toJSON = function() {
       s.location.coordinates[1] || 0
     ),
     social: s.social,
-  }
-}
+    closed: s.closed || false,
+  };
+};
 
 export const StoreModel = (models.store || model('store', StoreSchema)) as Model<Store>;
 

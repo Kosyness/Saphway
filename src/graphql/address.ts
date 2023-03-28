@@ -1,15 +1,20 @@
 import { Field, InputType, ObjectType } from 'type-graphql';
-import { StringSearch } from './helpers';
 
+/**
+ * The State Object
+ */
 @ObjectType()
 export class State {
   @Field()
-  state : string = '';
+  state: string = '';
 
   @Field()
   abbreviation: string = '';
 }
 
+/**
+ * The Address Object
+ */
 @ObjectType()
 export class Address {
   @Field()
@@ -28,6 +33,9 @@ export class Address {
   country: string = '';
 }
 
+/**
+ * The Address State Filter
+ */
 @InputType()
 export class StateFilter {
   @Field({
@@ -41,6 +49,9 @@ export class StateFilter {
   abbreviation?: String;
 }
 
+/**
+ * The Address Filter
+ */
 @InputType()
 export class AddressFilter {
   @Field({
@@ -48,23 +59,23 @@ export class AddressFilter {
   })
   street?: String;
 
-    @Field({
-      nullable: true,
-    })
-    city?: String;
+  @Field({
+    nullable: true,
+  })
+  city?: String;
 
-    @Field((returns) => StateFilter, {
-      nullable: true,
-    })
-    state?: StateFilter;
+  @Field((returns) => StateFilter, {
+    nullable: true,
+  })
+  state?: StateFilter;
 
-    @Field({
-      nullable: true,
-    })
-    zip?: String;
+  @Field({
+    nullable: true,
+  })
+  zip?: String;
 
-    @Field({
-      nullable: true,
-    })
-    country?: String;
+  @Field({
+    nullable: true,
+  })
+  country?: String;
 }
